@@ -1,0 +1,114 @@
+/* Refinamentos visuais adicionais — carregado depois do bundle principal,
+   não altera o CSS gerado pelo build. Seletores por atributo miram nas
+   classes Tailwind já existentes no HTML renderizado, sem depender de
+   nomes de classe novos. */
+
+::selection {
+  background: hsl(var(--secondary) / 0.35);
+  color: hsl(var(--foreground));
+}
+
+:focus-visible {
+  outline: 2px solid hsl(var(--secondary));
+  outline-offset: 2px;
+}
+
+@media (min-width: 1024px) {
+  ::-webkit-scrollbar { width: 10px; }
+  ::-webkit-scrollbar-track { background: hsl(var(--muted)); }
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--secondary) / 0.6);
+    border-radius: 9999px;
+    border: 2px solid hsl(var(--muted));
+  }
+  ::-webkit-scrollbar-thumb:hover { background: hsl(var(--secondary)); }
+  html { scrollbar-color: hsl(var(--secondary) / 0.6) hsl(var(--muted)); }
+}
+
+/* Hero: leve efeito Ken Burns na imagem ativa do carrossel */
+#home div[class*="transition-opacity duration-1000"] img {
+  transform-origin: center;
+  transform: scale(1);
+}
+#home div[class*="transition-opacity duration-1000"][class*="opacity-100"] img {
+  animation: mathias-kenburns 10s ease-out forwards;
+}
+@keyframes mathias-kenburns {
+  from { transform: scale(1); }
+  to { transform: scale(1.08); }
+}
+
+/* Links de navegação: sublinhado que cresce a partir do centro */
+nav a[class*="hover:text-foreground hover:scale-110"] {
+  position: relative;
+}
+nav a[class*="hover:text-foreground hover:scale-110"]::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -4px;
+  transform: translateX(-50%) scaleX(0);
+  width: 100%;
+  height: 1px;
+  background: hsl(var(--secondary));
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+nav a[class*="hover:text-foreground hover:scale-110"]:hover::after {
+  transform: translateX(-50%) scaleX(1);
+}
+
+/* Cards da equipe: barra de destaque no topo + leve zoom na foto */
+div[class*="hover:shadow-2xl hover:scale-[1.03] transition-all duration-300"] {
+  position: relative;
+}
+div[class*="hover:shadow-2xl hover:scale-[1.03] transition-all duration-300"]::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, hsl(var(--secondary)), hsl(var(--primary)), hsl(var(--secondary)));
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 10;
+}
+div[class*="hover:shadow-2xl hover:scale-[1.03] transition-all duration-300"]:hover::before {
+  transform: scaleX(1);
+}
+div[class*="hover:shadow-2xl hover:scale-[1.03] transition-all duration-300"] img {
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+div[class*="hover:shadow-2xl hover:scale-[1.03] transition-all duration-300"]:hover img {
+  transform: scale(1.06);
+}
+
+/* Botão flutuante do WhatsApp: pulso sutil para chamar atenção */
+a[href="https://wa.me/message/3KIA2UKKREZ4L1"] {
+  position: relative;
+}
+a[href="https://wa.me/message/3KIA2UKKREZ4L1"]::before {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 9999px;
+  background: rgba(37, 211, 102, 0.35);
+  animation: mathias-pulse-ring 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  z-index: -1;
+}
+@keyframes mathias-pulse-ring {
+  0% { transform: scale(1); opacity: 0.6; }
+  70% { transform: scale(1.4); opacity: 0; }
+  100% { transform: scale(1.4); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #home div[class*="transition-opacity duration-1000"][class*="opacity-100"] img,
+  a[href="https://wa.me/message/3KIA2UKKREZ4L1"]::before {
+    animation: none !important;
+  }
+  * {
+    transition-duration: 0.01ms !important;
+  }
+}
